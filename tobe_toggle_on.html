@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>당근마켓 동네생활 TO-BE (내 카페)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f8f9fa;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .phone-frame {
+            width: 375px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .phone-header {
+            background: white;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .time {
+            font-size: 15px;
+            font-weight: 600;
+        }
+        
+        .status-icons {
+            display: flex;
+            gap: 5px;
+            font-size: 12px;
+        }
+        
+        .top-bar {
+            padding: 15px 20px;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        
+        .location {
+            font-size: 18px;
+            font-weight: 700;
+            color: #212529;
+        }
+        
+        .top-icons {
+            display: flex;
+            gap: 15px;
+            font-size: 20px;
+        }
+        
+        .content {
+            background: white;
+            padding: 0 0 80px 0;
+            min-height: 600px;
+            max-height: 667px;
+            overflow-y: auto;
+        }
+        
+        .content::-webkit-scrollbar {
+            width: 0;
+            display: none;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #212529;
+            padding: 20px 20px 12px 20px;
+        }
+        
+        .keyword-scroll {
+            padding: 0 20px 20px 20px;
+            overflow-x: auto;
+            display: flex;
+            gap: 8px;
+            scrollbar-width: none;
+        }
+        
+        .keyword-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .keyword-chip {
+            background: white;
+            border: 1.5px solid #dee2e6;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .keyword-chip:hover {
+            border-color: #FF6F0F;
+            background: #fff5f0;
+        }
+        
+        .keyword-chip.active {
+            background: #FF6F0F;
+            color: white;
+            border-color: #FF6F0F;
+        }
+        
+        .section-header {
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .section-header h2 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #212529;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 51px;
+            height: 31px;
+            background: #FF6F0F;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .toggle-knob {
+            position: absolute;
+            top: 3px;
+            left: 23px;
+            width: 25px;
+            height: 25px;
+            background: white;
+            border-radius: 50%;
+            transition: left 0.3s;
+        }
+        
+        .my-groups-scroll {
+            padding: 0 20px 15px 20px;
+            overflow-x: auto;
+            display: flex;
+            gap: 10px;
+            scrollbar-width: none;
+        }
+        
+        .my-groups-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .group-tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .group-tab-image {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #f1f3f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .group-tab.active .group-tab-image {
+            border-color: #FF6F0F;
+            background: #fff5f0;
+        }
+        
+        .group-tab-name {
+            font-size: 12px;
+            color: #495057;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        .group-tab.active .group-tab-name {
+            color: #FF6F0F;
+            font-weight: 700;
+        }
+        
+        .feed-list {
+            padding: 0 20px;
+        }
+        
+        .my-feed-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        
+        .my-feed-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .my-feed-profile {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #FF6F0F;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .my-feed-user {
+            flex: 1;
+        }
+        
+        .my-feed-username {
+            font-size: 13px;
+            font-weight: 600;
+            color: #212529;
+        }
+        
+        .my-feed-time {
+            font-size: 11px;
+            color: #adb5bd;
+        }
+        
+        .my-feed-title {
+            font-size: 14px;
+            color: #212529;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        .my-feed-actions {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            color: #868e96;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #adb5bd;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        .nav-item.active {
+            color: #212529;
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+        }
+        
+        .float-btn {
+            position: fixed;
+            bottom: 90px;
+            right: calc(50% - 187.5px + 20px);
+            width: 56px;
+            height: 56px;
+            background: #FF6F0F;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            box-shadow: 0 4px 12px rgba(255, 111, 15, 0.3);
+            cursor: pointer;
+        }
+        
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #FF6F0F;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-header">
+            <div class="time">4:01</div>
+            <div class="status-icons">📶 📡 🔋72</div>
+        </div>
+        
+        <div class="top-bar">
+            <div class="location">화정동 ▼</div>
+            <div class="top-icons">🔍 🔔 ☰</div>
+        </div>
+        
+        <div class="content">
+            <div class="section-title">오늘 인기 모임 키워드</div>
+            <div class="keyword-scroll">
+                <div class="keyword-chip active">전국 🔥</div>
+                <div class="keyword-chip">다회 ☕</div>
+                <div class="keyword-chip">독서 📚</div>
+                <div class="keyword-chip">맛집 🍊</div>
+                <div class="keyword-chip">스키 🎿</div>
+                <div class="keyword-chip">또개질 🦐</div>
+                <div class="keyword-chip">논산탑 💀</div>
+                <div class="keyword-chip">두존후 🥟</div>
+            </div>
+            
+            <div class="section-header">
+                <h2 class="section-title-text">내 카페</h2>
+                <div class="toggle-switch">
+                    <div class="toggle-knob"></div>
+                </div>
+            </div>
+            
+            <div class="my-groups-scroll">
+                <div class="group-tab active">
+                    <div class="group-tab-image">🎾</div>
+                    <div class="group-tab-name">테니스 모임</div>
+                </div>
+                <div class="group-tab">
+                    <div class="group-tab-image">📚</div>
+                    <div class="group-tab-name">독서 클럽</div>
+                </div>
+                <div class="group-tab">
+                    <div class="group-tab-image">🍕</div>
+                    <div class="group-tab-name">맛집 탐방</div>
+                </div>
+                <div class="group-tab">
+                    <div class="group-tab-image">⛰️</div>
+                    <div class="group-tab-name">등산 모임</div>
+                </div>
+            </div>
+            
+            <div class="feed-list">
+                <div class="my-feed-item">
+                    <div class="my-feed-header">
+                        <div class="my-feed-profile">🎾</div>
+                        <div class="my-feed-user">
+                            <div class="my-feed-username">맛쟁이 가을샐러드</div>
+                            <div class="my-feed-time">10분 전</div>
+                        </div>
+                    </div>
+                    <div class="my-feed-title">이번 주 토요일 오전 경기 참여하실 분 계신가요? 현재 2명 모집 중입니다!</div>
+                    <div class="my-feed-actions">
+                        <span>👍 좋아요</span>
+                        <span>💬 댓글</span>
+                        <span>➤ 공유</span>
+                    </div>
+                </div>
+                
+                <div class="my-feed-item">
+                    <div class="my-feed-header">
+                        <div class="my-feed-profile">🎾</div>
+                        <div class="my-feed-user">
+                            <div class="my-feed-username">맛쟁이 가을샐러드</div>
+                            <div class="my-feed-time">1시간 전</div>
+                        </div>
+                    </div>
+                    <div class="my-feed-title">🌟공부할 때 가장 좋아하는 간식은 무엇인가요? 의견들을 들어보아요</div>
+                    <div class="my-feed-actions">
+                        <span>👍 좋아요</span>
+                        <span>💬 댓글</span>
+                        <span>➤ 공유</span>
+                    </div>
+                </div>
+                
+                <div class="my-feed-item">
+                    <div class="my-feed-header">
+                        <div class="my-feed-profile">🎾</div>
+                        <div class="my-feed-user">
+                            <div class="my-feed-username">맛쟁이 가을샐러드</div>
+                            <div class="my-feed-time">3시간 전 · 가람이</div>
+                        </div>
+                    </div>
+                    <div class="my-feed-title">오늘부터일교</div>
+                    <div class="my-feed-actions">
+                        <span>👍 좋아요</span>
+                        <span>💬 댓글</span>
+                        <span>➤ 공유</span>
+                    </div>
+                </div>
+                
+                <div class="my-feed-item">
+                    <div class="my-feed-header">
+                        <div class="my-feed-profile" style="background: #20c997;">2️⃣</div>
+                        <div class="my-feed-user">
+                            <div class="my-feed-username">20대여성 맛는 함 사람</div>
+                            <div class="my-feed-time">6시간 전 · 가람이</div>
+                        </div>
+                    </div>
+                    <div class="my-feed-title">✨ 오늘 혼수영광덕에서 일할 때 집 앞 전신 오오 실은 사분이 필요할까 너무?</div>
+                    <div class="my-feed-actions">
+                        <span>👍 좋아요</span>
+                        <span>💬 댓글</span>
+                        <span>➤ 공유</span>
+                    </div>
+                </div>
+                
+                <div class="my-feed-item">
+                    <div class="my-feed-header">
+                        <div class="my-feed-profile">🎾</div>
+                        <div class="my-feed-user">
+                            <div class="my-feed-username">테니스 마니아</div>
+                            <div class="my-feed-time">8시간 전</div>
+                        </div>
+                    </div>
+                    <div class="my-feed-title">다음 주 모임 장소 투표합니다! 댓글로 의견 남겨주세요 🙏</div>
+                    <div class="my-feed-actions">
+                        <span>👍 좋아요</span>
+                        <span>💬 댓글</span>
+                        <span>➤ 공유</span>
+                    </div>
+                </div>
+                
+                <div class="my-feed-item">
+                    <div class="my-feed-header">
+                        <div class="my-feed-profile">🎾</div>
+                        <div class="my-feed-user">
+                            <div class="my-feed-username">코트 예약왕</div>
+                            <div class="my-feed-time">12시간 전</div>
+                        </div>
+                    </div>
+                    <div class="my-feed-title">이번 주 토요일 코트 예약 완료했습니다! 오전 9시부터 12시까지예요</div>
+                    <div class="my-feed-actions">
+                        <span>👍 좋아요</span>
+                        <span>💬 댓글</span>
+                        <span>➤ 공유</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bottom-nav">
+            <div class="nav-item">
+                <div class="nav-icon">🏠</div>
+                <div>홈</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon">👥</div>
+                <div>커뮤니티</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📍</div>
+                <div>동네지도</div>
+            </div>
+            <div class="nav-item" style="position: relative;">
+                <div class="nav-icon">💬</div>
+                <div>채팅</div>
+                <div class="badge">12</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👤</div>
+                <div>나의 당근</div>
+            </div>
+        </div>
+        
+        <div class="float-btn">+</div>
+    </div>
+    
+    <script>
+        const toggleSwitch = document.querySelector('.toggle-switch');
+        const titleText = document.querySelector('.section-title-text');
+        const groupsScroll = document.querySelector('.my-groups-scroll');
+        const feedList = document.querySelector('.feed-list');
+        let isOn = true;
+        
+        toggleSwitch.addEventListener('click', function() {
+            if (isOn) {
+                // ON → OFF
+                this.style.background = '#e9ecef';
+                this.querySelector('.toggle-knob').style.left = '3px';
+                titleText.textContent = '우리동네 모임';
+                groupsScroll.style.display = 'none';
+                
+                feedList.innerHTML = `
+                    <div style="display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid #f1f3f5;">
+                        <div style="width: 80px; height: 80px; border-radius: 12px; background: #dc3545; color: white; font-weight: bold; font-size: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">FIND<br>MYSELF</div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 15px; font-weight: 600; color: #212529; margin-bottom: 6px;">✨ 반짝반짝 내 피부 찾기 ✨</div>
+                            <div style="font-size: 13px; color: #868e96; margin-bottom: 8px;">안녕하세요! 매일 거울만 들여다보시는 분 있나요?? ...</div>
+                            <div style="display: flex; gap: 8px; font-size: 12px; color: #adb5bd;">
+                                <span>📍 화정동</span>
+                                <span>👤 신규 모임</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid #f1f3f5;">
+                        <div style="width: 80px; height: 80px; border-radius: 12px; background: #f1f3f5; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 32px;">📖</div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 15px; font-weight: 600; color: #212529; margin-bottom: 6px;">혼자서 공부 못 하는 의지박약인들의 모임</div>
+                            <div style="font-size: 13px; color: #868e96; margin-bottom: 8px;">원종~성수 부근에서 같이 공부하실 분들을 찾아요</div>
+                            <div style="display: flex; gap: 8px; font-size: 12px; color: #adb5bd;">
+                                <span>📍 원종동</span>
+                                <span>👤 40명</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                isOn = false;
+            } else {
+                // OFF → ON
+                this.style.background = '#FF6F0F';
+                this.querySelector('.toggle-knob').style.left = '23px';
+                titleText.textContent = '내 카페';
+                groupsScroll.style.display = 'flex';
+                
+                feedList.innerHTML = `
+                    <div class="my-feed-item">
+                        <div class="my-feed-header">
+                            <div class="my-feed-profile">🎾</div>
+                            <div class="my-feed-user">
+                                <div class="my-feed-username">맛쟁이 가을샐러드</div>
+                                <div class="my-feed-time">10분 전</div>
+                            </div>
+                        </div>
+                        <div class="my-feed-title">이번 주 토요일 오전 경기 참여하실 분 계신가요? 현재 2명 모집 중입니다!</div>
+                        <div class="my-feed-actions">
+                            <span>👍 좋아요</span>
+                            <span>💬 댓글</span>
+                            <span>➤ 공유</span>
+                        </div>
+                    </div>
+                    <div class="my-feed-item">
+                        <div class="my-feed-header">
+                            <div class="my-feed-profile">🎾</div>
+                            <div class="my-feed-user">
+                                <div class="my-feed-username">맛쟁이 가을샐러드</div>
+                                <div class="my-feed-time">1시간 전</div>
+                            </div>
+                        </div>
+                        <div class="my-feed-title">🌟공부할 때 가장 좋아하는 간식은 무엇인가요? 의견들을 들어보아요</div>
+                        <div class="my-feed-actions">
+                            <span>👍 좋아요</span>
+                            <span>💬 댓글</span>
+                            <span>➤ 공유</span>
+                        </div>
+                    </div>
+                    <div class="my-feed-item">
+                        <div class="my-feed-header">
+                            <div class="my-feed-profile">🎾</div>
+                            <div class="my-feed-user">
+                                <div class="my-feed-username">맛쟁이 가을샐러드</div>
+                                <div class="my-feed-time">3시간 전 · 가람이</div>
+                            </div>
+                        </div>
+                        <div class="my-feed-title">오늘부터일교</div>
+                        <div class="my-feed-actions">
+                            <span>👍 좋아요</span>
+                            <span>💬 댓글</span>
+                            <span>➤ 공유</span>
+                        </div>
+                    </div>
+                    <div class="my-feed-item">
+                        <div class="my-feed-header">
+                            <div class="my-feed-profile" style="background: #20c997;">2️⃣</div>
+                            <div class="my-feed-user">
+                                <div class="my-feed-username">20대여성 맛는 함 사람</div>
+                                <div class="my-feed-time">6시간 전 · 가람이</div>
+                            </div>
+                        </div>
+                        <div class="my-feed-title">✨ 오늘 혼수영광덕에서 일할 때 집 앞 전신 오오 실은 사분이 필요할까 너무?</div>
+                        <div class="my-feed-actions">
+                            <span>👍 좋아요</span>
+                            <span>💬 댓글</span>
+                            <span>➤ 공유</span>
+                        </div>
+                    </div>
+                    <div class="my-feed-item">
+                        <div class="my-feed-header">
+                            <div class="my-feed-profile">🎾</div>
+                            <div class="my-feed-user">
+                                <div class="my-feed-username">테니스 마니아</div>
+                                <div class="my-feed-time">8시간 전</div>
+                            </div>
+                        </div>
+                        <div class="my-feed-title">다음 주 모임 장소 투표합니다! 댓글로 의견 남겨주세요 🙏</div>
+                        <div class="my-feed-actions">
+                            <span>👍 좋아요</span>
+                            <span>💬 댓글</span>
+                            <span>➤ 공유</span>
+                        </div>
+                    </div>
+                    <div class="my-feed-item">
+                        <div class="my-feed-header">
+                            <div class="my-feed-profile">🎾</div>
+                            <div class="my-feed-user">
+                                <div class="my-feed-username">코트 예약왕</div>
+                                <div class="my-feed-time">12시간 전</div>
+                            </div>
+                        </div>
+                        <div class="my-feed-title">이번 주 토요일 코트 예약 완료했습니다! 오전 9시부터 12시까지예요</div>
+                        <div class="my-feed-actions">
+                            <span>👍 좋아요</span>
+                            <span>💬 댓글</span>
+                            <span>➤ 공유</span>
+                        </div>
+                    </div>
+                `;
+                
+                isOn = true;
+            }
+        });
+        
+        document.querySelectorAll('.keyword-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                this.closest('.keyword-scroll').querySelectorAll('.keyword-chip').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        document.querySelectorAll('.group-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                this.closest('.my-groups-scroll').querySelectorAll('.group-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
